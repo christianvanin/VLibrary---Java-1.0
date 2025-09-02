@@ -1,0 +1,136 @@
+#terminal-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+}
+
+#terminal-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.terminal {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.terminal-header {
+    background-color: #f0e6d2;
+    padding: 12px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e6e6e6;
+    flex-shrink: 0;
+}
+
+.terminal-header .panel-title {
+    font-weight: 600;
+    color: #555555;
+}
+
+.terminal-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.terminal-btn {
+    background-color: #e6d8b6;
+    color: #333333;
+    border: 1px solid #d4c6a6;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.terminal-btn:hover {
+    background-color: #d4c6a6;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.terminal-btn:active {
+    background-color: #c5b58f;
+}
+
+.terminal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    background-color: #fffaf0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.terminal-input-bar {
+    flex-shrink: 0;
+    background-color: #ffffff;
+    border-top: 1px solid #e6e6e6;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.terminal-input-bar .command-label {
+    color: #555555;
+    font-weight: 500;
+}
+
+.terminal-input-bar input {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+    outline: none;
+    font-family: 'Roboto', monospace;
+    font-size: 14px;
+    color: #333333;
+}
+
+.terminal-input-bar input::placeholder {
+    color: #999999;
+    font-style: italic;
+}
+
+.cursor {
+    display: inline-block;
+    width: 10px;
+    background-color: #333333;
+    margin-left: 2px;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 50%, 100% { opacity: 1; }
+    25%, 75% { opacity: 0; }
+}
+
+.terminal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.terminal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.terminal-body::-webkit-scrollbar-thumb {
+    background: #ccc;
+}
+
+.terminal-body::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}

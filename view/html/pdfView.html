@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../js/javaBridge.js"></script>
+    <link rel="stylesheet" href="../css/pdfView.css">
+    <script src="https://kit.fontawesome.com/6d42bcf46c.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <title>LibraryV PDF Viewer</title>
+</head>
+<body>
+    <div id="side-panel">
+        <div class="nav-section">
+            <div class="panel-title">Menu</div>
+            <button class="nav-button" onclick="changePagesPathInIndex()"><i class="fa-solid fa-book"></i> Indice</button>
+            <button class="nav-button active" onclick="changePagesPathInBody()"><i class="fa-solid fa-book-open"></i> Corpo</button>
+        </div>
+        <div class="bottom-nav-section">
+            <button class="home-button" onclick="JavaBridge.send('setting homeview')"><i class="fa-solid fa-house icon"></i> Home</button>
+        </div>
+    </div>
+
+    <div id="main-panel">
+        <div id="top-panel">
+            <h2>Library<span class="highlight">V</span></h2>
+            <div class="panel-title">Version 1.0.0 @2025</div>
+        </div>
+
+        <div id="content-area">
+            <div class="text-panels-row">
+                <div class="text-panel-container">
+                    <div class="text-panel-header" onclick="toggleTextPanel('left')">
+                        <div class="text-panel-title">
+                            <span><i class="fa-solid fa-text-height"></i></span>
+                            <span>Pagina Sinistra</span>
+                        </div>
+                        <div class="text-panel-controls">
+                            <button class="copy-btn" onclick="copyTextContent(event, 'left')" title="Copia testo pagina sinistra">
+                                <i class="fa-solid fa-copy"></i>
+                            </button>
+                            <span class="toggle-arrow" id="leftArrow"><i class="fa-solid fa-arrow-down"></i></span>
+                        </div>
+                    </div>
+                    <div class="text-panel-content" id="leftTextPanel">
+                        <div class="text-content" id="leftTextContent">
+                            <div class="no-text-message">Nessun testo disponibile per questa pagina</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-panel-container">
+                    <div class="text-panel-header" onclick="toggleTextPanel('right')">
+                        <div class="text-panel-title">
+                            <span><i class="fa-solid fa-text-height"></i></span>
+                            <span>Pagina Destra</span>
+                        </div>
+                        <div class="text-panel-controls">
+                            <button class="copy-btn" onclick="copyTextContent(event, 'right')" title="Copia testo pagina destra">
+                                <i class="fa-solid fa-copy"></i>
+                            </button>
+                            <span class="toggle-arrow" id="rightArrow"><i class="fa-solid fa-arrow-down"></i></span>
+                        </div>
+                    </div>
+                    <div class="text-panel-content" id="rightTextPanel">
+                        <div class="text-content" id="rightTextContent">
+                            <div class="no-text-message">Nessun testo disponibile per questa pagina</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pdf-viewer" id="pdfViewer">
+                <div class="loading" id="loading"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento PDF...</div>
+                <div class="pages-container" id="pagesContainer" style="display: none; flex-direction: row; justify-content: center;">
+                    <canvas id="leftPage" class="page-canvas"></canvas>
+                    <canvas id="rightPage" class="page-canvas"></canvas>
+                </div>
+            </div>
+
+            <div class="bottom-toolbar">
+                <div class="toolbar-section">
+                    <button id="prevPageBtn"><i class="fa-solid fa-left-long"></i></button>
+                    <div class="page-info">
+                        <input type="number" id="currentPageInput" class="page-input" min="1" value="1">
+                        <span class="page-separator">/</span>
+                        <span id="totalPages">0</span>
+                    </div>
+                    <button id="nextPageBtn"><i class="fa-solid fa-right-long"></i></button>
+                </div>
+
+                <div class="toolbar-section">
+                    <button id="zoomOutBtn" title="Riduci Qualità">-</button>
+                    <div class="zoom-controls">
+                        <input type="range" id="zoomSlider" min="50" max="200" value="100">
+                        <span id="zoomPercent">100%</span>
+                    </div>
+                    <button id="zoomInBtn" title="Aumenta Qualità">+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/panelNavigation.js"></script>
+    <script src="../js/pdfView.js"></script>
+    <script>JavaBridge.send("book get");</script>
+</body>
+</html>

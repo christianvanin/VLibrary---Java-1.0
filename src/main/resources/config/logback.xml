@@ -1,0 +1,60 @@
+<configuration>
+
+    <!-- ============================
+         Appender console con colori
+         ============================ -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!-- ============================
+         File sessione (resettato ad ogni avvio)
+         ============================ -->
+    <appender name="SESSION_FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/app.log</file>
+        <append>false</append> <!-- resettato ad ogni avvio -->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ============================
+         File archivio (accumula tutto)
+         ============================ -->
+    <appender name="ARCHIVE_FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/archive.log</file>
+        <append>true</append> <!-- accumula log di tutte le sessioni -->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ============================
+         File CEF (resettato, vuoto)
+         ============================ -->
+    <appender name="CEF_FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/cef.log</file>
+        <append>false</append> <!-- il file viene resettato ad ogni avvio -->
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="CEF" level="OFF" additivity="false">
+        <appender-ref ref="CEF_FILE"/>
+    </logger>
+
+    <!-- ============================
+         Logger root
+         ============================ -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="SESSION_FILE"/>
+        <appender-ref ref="ARCHIVE_FILE"/>
+    </root>
+
+</configuration>

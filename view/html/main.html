@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../js/javaBridge.js"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/terminal.css">
+    <link rel="stylesheet" href="../css/books.css">
+    <script src="https://kit.fontawesome.com/6d42bcf46c.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>LibraryV</title>
+</head>
+<body>
+    <div id="side-panel">
+        <div class="nav-group-title">Navigazione</div>
+        <button class="nav-button">
+            <i class="fa-solid fa-house icon"></i> Home
+        </button>
+        <button class="nav-button">
+            <i class="fa-solid fa-book icon"></i> Catalogo
+        </button>
+        <button class="nav-button">
+            <i class="fa-solid fa-gear icon"></i> Impostazioni
+        </button>
+        <button class="nav-button">
+            <i class="fa-solid fa-terminal"></i> Terminale
+        </button>
+    </div>
+
+
+    <div id="main-panel">
+        <div class="panel" id="home-panel" style="display:none;">
+            <div id="top-panel">
+                <h2>Library<span class="highlight">V</span><div class="panel-title">Version 1.0.0</div></h2>
+            </div>
+        </div>
+        <div class="panel" id="catalog-panel" style="display:flex; flex-direction: column;">
+            <div id="top-panel">
+                <h2>Library<span class="highlight">V</span><div class="panel-title">Version 1.0.0</div></h2>
+                <div class="search-container">
+                    <input type="text" placeholder="Cerca..." id="search-bar">
+                    <button id="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </div>
+            </div>
+
+            <div id="sub-panel">
+                <div class="filters-container">
+                    <div class="dropdown">
+                        <button class="dropbtn">Materia ▼</button>
+                        <div class="dropdown-content" id="subject-dropdown"></div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="dropbtn">Autore ▼</button>
+                        <div class="dropdown-content" id="author-dropdown"></div>
+                    </div>
+                    <div id="books-count-container">
+                        Libri disponibili: <span id="books-count">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="content-area">
+                <div class="books-grid">
+                    
+                </div>
+            </div>
+        </div>
+
+        <div class="panel" id="settings-panel" style="display:none;">
+            <div id="top-panel">
+                <h2>Library<span class="highlight">V</span><div class="panel-title">Version 1.0.0</div></h2>
+            </div>
+            <div id="settings-content">
+            </div>
+        </div>
+
+        <div class="panel" id="terminal-panel" style="display:none; display:flex; flex-direction: column;">
+            <div id="top-panel">
+                <h2>Library<span class="highlight">V</span><div class="panel-title">Version 1.0.0</div></h2>
+            </div>
+            <div id="terminal-content">
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="panel-title">Terminale</div>
+                        <div class="terminal-buttons">
+                            <button class="terminal-btn" id="clear-btn" onclick="JavaBridge.send('terminal clear')">Clear</button>
+                        </div>
+                    </div>
+                    <div class="terminal-body">
+                    </div>
+                    <div class="terminal-input-bar">
+                        <span class="command-label">$/</span>
+                        <input type="text" placeholder="Scrivi il comando... HELP / per aiuto">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <script src="../js/panelNavigation.js" defer></script>
+    <script src="../js/terminal.js" defer></script>
+    <script src="../js/bookCard.js" defer></script>
+    <script src="../js/pdfView.js" defer></script>
+
+    <script>
+        JavaBridge.send("terminal run");
+        JavaBridge.send("book reload");
+    </script>
+    
+</body>
+</html>
