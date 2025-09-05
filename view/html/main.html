@@ -28,14 +28,67 @@
         </button>
     </div>
 
-
     <div id="main-panel">
-        <div class="panel" id="home-panel" style="display:none;">
+        <div class="panel" id="home-panel" style="display:flex; flex-direction: column;">
             <div id="top-panel">
                 <h2>Library<span class="highlight">V</span><div class="panel-title">Version 1.0.0</div></h2>
             </div>
+            <div class="home-content">
+                <div class="welcome-section">
+                    <h1>Benvenuto in Library<span class="highlight">V</span></h1>
+                    <p>Il tuo sistema di gestione biblioteca personale completo e intuitivo</p>
+                    <p>Organizza, cerca e gestisci la tua collezione di libri digitali con facilità</p>
+                    <span class="version-badge">Versione 1.0.0</span>
+                </div>
+                <div class="features-section">
+                    <h2 class="section-title">Funzionalità Principali</h2>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <i class="fa-solid fa-book fa-bounce feature-icon"></i>
+                            <div class="feature-title">Catalogo Digitale</div>
+                            <div class="feature-description">Sfoglia e gestisci la tua collezione completa di libri con un'interfaccia moderna e intuitiva</div>
+                            <div class="feature-status active">Attiva</div>
+                        </div>
+
+                        <div class="feature-card">
+                            <i class="fa-solid fa-magnifying-glass fa-bounce feature-icon"></i>
+                            <div class="feature-title">Ricerca Avanzata</div>
+                            <div class="feature-description">Trova rapidamente i tuoi libri utilizzando filtri per materia, autore e ricerca testuale</div>
+                            <div class="feature-status active">Attiva</div>
+                        </div>
+
+                        <div class="feature-card">
+                            <i class="fa-solid fa-brain fa-bounce feature-icon"></i>
+                            <div class="feature-title">AI Integrata</div>
+                            <div class="feature-description">utilizza Ai per riscrivere il testo presente nei tuoi pdf</div>
+                            <div class="feature-status beta">test</div>
+                        </div>
+
+                        <div class="feature-card">
+                            <i class="fa-solid fa-terminal fa-bounce feature-icon"></i>
+                            <div class="feature-title">Terminale Integrato</div>
+                            <div class="feature-description">Gestisci il sistema tramite comandi terminale per operazioni avanzate</div>
+                            <div class="feature-status active">Attiva</div>
+                        </div>
+
+                        <div class="feature-card">
+                            <i class="fa-solid fa-file-pdf fa-bounce feature-icon"></i>
+                            <div class="feature-title">Visualizzatore PDF</div>
+                            <div class="feature-description">Leggi i tuoi documenti PDF direttamente nell'applicazione</div>
+                            <div class="feature-status active">Attiva</div>
+                        </div>
+
+                        <div class="feature-card">
+                            <i class="fa-solid fa-pen-to-square fa-bounce feature-icon"></i>
+                            <div class="feature-title">Copia Il Testo Dai Tuoi PDF</div>
+                            <div class="feature-description">Copia il testo di ogni pagina direttamente dal programma</div>
+                            <div class="feature-status active">Attiva</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="panel" id="catalog-panel" style="display:flex; flex-direction: column;">
+        <div class="panel" id="catalog-panel" style="display:none;">
             <div id="top-panel">
                 <h2>Library<span class="highlight">V</span><div class="panel-title">Version 1.0.0</div></h2>
                 <div class="search-container">
@@ -87,8 +140,7 @@
                             <button class="terminal-btn" id="clear-btn" onclick="JavaBridge.send('terminal clear')">Clear</button>
                         </div>
                     </div>
-                    <div class="terminal-body">
-                    </div>
+                    <div class="terminal-body"></div>
                     <div class="terminal-input-bar">
                         <span class="command-label">$/</span>
                         <input type="text" placeholder="Scrivi il comando... HELP / per aiuto">

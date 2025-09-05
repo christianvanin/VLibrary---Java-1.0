@@ -17,6 +17,6 @@
                                         by Vanin Christian
                                                      @2025
                                 --------------------------
-                                AI Integrated: Gemma3:270m
-
+                                 AI Integrated: GPT4o-mini
+  
 %-----------------------------------------------------------%                        

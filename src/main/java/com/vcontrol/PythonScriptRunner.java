@@ -12,14 +12,9 @@ public class PythonScriptRunner {
 
     private static String getPythonCommand() {
         String custom = System.getenv("PYTHON_CMD");
-        if (custom != null && !custom.isBlank()) {
-            System.out.println("[DEBUG] Usando PYTHON_CMD da environment: " + custom);
-            return custom;
-        }
-
+        if (custom != null && !custom.isBlank()) return custom;
         String os = System.getProperty("os.name").toLowerCase();
         String pythonCmd = os.contains("win") ? "python" : "python3";
-        System.out.println("[DEBUG] OS rilevato: " + os + ", comando Python scelto: " + pythonCmd);
         return pythonCmd;
     }
 
@@ -61,9 +56,7 @@ public class PythonScriptRunner {
                 try (BufferedReader reader = new BufferedReader(
                         new InputStreamReader(p.getErrorStream(), StandardCharsets.UTF_8))) {
                     String line;
-                    while ((line = reader.readLine()) != null) {
-                        synchronized(errorOutput) { errorOutput.append(line).append("\n"); }
-                    }
+                    while ((line = reader.readLine()) != null) { synchronized(errorOutput) { errorOutput.append(line).append("\n"); }}
                 } catch (IOException e) { }
             });
 
@@ -73,19 +66,12 @@ public class PythonScriptRunner {
             executor.shutdown();
 
             int exitCode = p.waitFor();
-            if (exitCode != 0) {
-                throw new PythonScriptException("[PythonScriptRunner ERROR] Script '" + scriptPath + 
-                        "' failed (exit code " + exitCode + "):\n" + errorOutput.toString());
-            }
+            if (exitCode != 0) throw new PythonScriptException("[PythonScriptRunner ERROR] Script '" + scriptPath + "' failed (exit code " + exitCode + "):\n" + errorOutput.toString());
 
-        } catch (PythonScriptException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new PythonScriptException("[PythonScriptRunner ERROR] Exception while running script '" + 
-                    scriptPath + "': " + e.getMessage());
-        } finally {
-            if (tempFile != null && tempFile.exists()) tempFile.delete();
-        }
+        } catch (PythonScriptException e) { throw e; } 
+        catch (Exception e) {
+            throw new PythonScriptException("[PythonScriptRunner ERROR] Exception while running script '" + scriptPath + "': " + e.getMessage());
+        } finally { if (tempFile != null && tempFile.exists()) tempFile.delete(); }
         return output.toString().trim();
     }
 
@@ -96,6 +82,7 @@ public class PythonScriptRunner {
     public static String runScript(String scriptPath, String inputText, int timeoutSeconds) throws PythonScriptException {
         return runScript(scriptPath, inputText, timeoutSeconds, true);
     }
+
     public static String runScriptWithArgs(String scriptPath, List<String> args, int timeoutSeconds) throws PythonScriptException {
         StringBuilder output = new StringBuilder();
         StringBuilder errorOutput = new StringBuilder();
@@ -114,9 +101,7 @@ public class PythonScriptRunner {
                 try (BufferedReader reader = new BufferedReader(
                         new InputStreamReader(p.getInputStream(), StandardCharsets.UTF_8))) {
                     String line;
-                    while ((line = reader.readLine()) != null) {
-                        synchronized(output) { output.append(line).append("\n"); }
-                    }
+                    while ((line = reader.readLine()) != null) synchronized(output) { output.append(line).append("\n"); }
                 } catch (IOException e) { }
             });
 
@@ -137,15 +122,12 @@ public class PythonScriptRunner {
 
             int exitCode = p.waitFor();
             if (exitCode != 0) {
-                throw new PythonScriptException("[PythonScriptRunner ERROR] Script '" + scriptPath + 
-                        "' failed (exit code " + exitCode + "):\n" + errorOutput.toString());
+                throw new PythonScriptException("[PythonScriptRunner ERROR] Script '" + scriptPath + "' failed (exit code " + exitCode + "):\n" + errorOutput.toString());
             }
 
-        } catch (PythonScriptException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new PythonScriptException("[PythonScriptRunner ERROR] Exception while running script '" + 
-                    scriptPath + "': " + e.getMessage());
+        } catch (PythonScriptException e) { throw e; } 
+        catch (Exception e) {
+            throw new PythonScriptException("[PythonScriptRunner ERROR] Exception while running script '" + scriptPath + "': " + e.getMessage());
         }
         return output.toString().trim();
     }

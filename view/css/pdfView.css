@@ -236,7 +236,7 @@ html, body {
     color: #212529;
     font-size: 13px;
     overflow-y: auto;
-    max-height: calc(100vh - 180px);
+    max-height: calc(100vh - 30vh);
     white-space: pre-wrap;
     user-select: text;
 }

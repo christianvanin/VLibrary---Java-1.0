@@ -89,6 +89,8 @@ public class View extends JFrame {
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setVisible(true);
+
+        CefApp.startup(args);
     }
 
     public void executeJS(String command, String payload) {

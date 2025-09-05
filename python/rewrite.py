@@ -5,7 +5,6 @@ import json
 from pathlib import Path
 
 def main():
-    # Assicurati che stdin/stdout usino UTF-8
     sys.stdout.reconfigure(encoding='utf-8')
     sys.stderr.reconfigure(encoding='utf-8')
     
@@ -26,18 +25,15 @@ def main():
         
         session = requests.Session()
 
-        # Prima richiesta per ottenere cookies e HTML
         resp = session.get("https://monica.im/")
         html = resp.text
 
-        # Estrazione device_id e x-client-id
         device_id_match = re.search(r'"device_id":"([a-z0-9-]+)"', html)
         client_id_match = re.search(r'"x-client-id":"([a-z0-9-]+)"', html)
 
         device_id = device_id_match.group(1) if device_id_match else "default-device"
         client_id = client_id_match.group(1) if client_id_match else "default-client"
 
-        # Costruzione payload dinamico
         payload = {
             "task_uid": "rewriter:5f273243-0f74-44d8-a8dd-3bd76c6faf50",
             "data": {
@@ -62,7 +58,6 @@ def main():
             "x-product-name": "Monica"
         }
 
-        # POST con la sessione
         url = "https://api.monica.im/api/seotool/ai_rewrite"
         response = session.post(url, headers=headers, data=json.dumps(payload), timeout=30)
         response.encoding = 'utf-8'
@@ -73,7 +68,6 @@ def main():
             sys.exit(1)
 
         try:
-            # Prova a leggere JSON
             json_response = response.json()
             if "text" in json_response:
                 result_text = json_response["text"]
@@ -84,7 +78,6 @@ def main():
             print(result_text)
             
         except json.JSONDecodeError:
-            # Gestione event-stream
             full_text = ""
             for line in response.text.split('\n'):
                 if line.startswith("data: "):

@@ -289,3 +289,133 @@ html, body {
     color: #555555;
     margin: 2px 0;
 }
+
+/* === STILI PER LA HOME PAGE === */
+
+#home-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    overflow: hidden;
+}
+
+.home-content {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px;
+    background-color: #fffaf0;
+}
+
+.welcome-section {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 40px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.welcome-section h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #333333;
+    margin: 0 0 15px 0;
+}
+
+.welcome-section h1 .highlight {
+    color: #333333;
+}
+
+.welcome-section p {
+    font-size: 1.1rem;
+    color: #696969;
+    margin: 0 0 10px 0;
+    line-height: 1.5;
+}
+
+.version-badge {
+    display: inline-block;
+    background-color: #e6e6e6;
+    color: #333333;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-top: 15px;
+}
+
+.features-section {
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333333;
+    text-align: center;
+    margin: 0 0 30px 0;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.feature-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+.feature-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.feature-icon {
+    font-size: 2rem;
+    color: #696969;
+    margin-bottom: 15px;
+}
+
+.feature-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333333;
+    margin-bottom: 10px;
+}
+
+.feature-description {
+    font-size: 0.95rem;
+    color: #555555;
+    line-height: 1.4;
+    margin-bottom: 15px;
+    flex-grow: 1;
+}
+
+.feature-status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    align-self: flex-start;
+}
+
+.feature-status.active {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.feature-status.beta {
+    background-color: #fff3cd;
+    color: #856404;
+}

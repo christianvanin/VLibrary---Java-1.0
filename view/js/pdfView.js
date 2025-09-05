@@ -135,9 +135,7 @@ async function renderPage(pdfDoc, canvas, scale = 1.0) {
 
         await page.render(renderContext).promise;
         
-    } catch (e) {
-        window.JavaBridge.send("print logjs Error rendering PDF page: " + e.message);
-    }
+    } catch (e) { }
 }
 
 async function loadCurrentPages() {
@@ -324,6 +322,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const prevBtn = document.getElementById('prevPageBtn');
     const nextBtn = document.getElementById('nextPageBtn');
     const pageInput = document.getElementById('currentPageInput');
+    const refreshBtn = document.getElementById('refreshPagesBtn');
 
     if (prevBtn) {
         prevBtn.addEventListener('click', () => {
@@ -353,6 +352,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.JavaBridge.send("print logjs Reached maximum pages: " + maxPages);
             }
         });
+    }
+
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', refreshPages);
     }
 
     if (pageInput) {
@@ -417,6 +420,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     updatePageDisplay();
 });
+
+function refreshPages() {
+    loadCurrentPages();
+}
 
 window.addEventListener('resize', () => {
     clearTimeout(window.resizeTimeout);
