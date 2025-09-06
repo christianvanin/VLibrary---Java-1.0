@@ -6,9 +6,118 @@ let totalBodyPages = 0;
 let totalIndexPages = 0;
 let currentZoom = 100;
 let currentPdfDocs = { left: null, right: null };
-let extractedTexts = { left: '', right: '' };
+let extractedTexts = { 
+    left: {
+        normale: '',
+        riscritto: '',
+        riassunto: '',
+        tradotto: ''
+    }, 
+    right: {
+        normale: '',
+        riscritto: '',
+        riassunto: '',
+        tradotto: ''
+    }
+};
+let currentTextInstances = { left: 'normale', right: 'normale' };
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+JavaBridge.register('setRewrittenText', function(jsonData) {
+    if (typeof jsonData === "string") {
+        try { jsonData = JSON.parse(jsonData); 
+        } catch(e) { 
+            window.JavaBridge.send("print logjs JSON parsing error in setRewrittenText: " + e.message);
+            return;
+        }
+    }
+    
+    if(jsonData && jsonData.text && jsonData.page) {
+        // Determina il lato basandoti sul numero di pagina
+        const side = (jsonData.page === currentPage) ? 'left' : 'right';
+        
+        if (jsonData.page === currentPage || jsonData.page === currentPage + 1) {
+            extractedTexts[side].riscritto = jsonData.text;
+            if (currentTextInstances[side] === 'riscritto') {
+                updateTextPanel(side);
+            }
+        }
+    }
+});
+
+JavaBridge.register('setSummaryText', function(jsonData) {
+    if (typeof jsonData === "string") {
+        try { jsonData = JSON.parse(jsonData); 
+        } catch(e) { 
+            window.JavaBridge.send("print logjs JSON parsing error in setSummaryText: " + e.message);
+            return;
+        }
+    }
+    
+    if(jsonData && jsonData.text && jsonData.page) {
+        // Determina il lato basandoti sul numero di pagina
+        const side = (jsonData.page === currentPage) ? 'left' : 'right';
+        
+        if (jsonData.page === currentPage || jsonData.page === currentPage + 1) {
+            extractedTexts[side].riassunto = jsonData.text;
+            if (currentTextInstances[side] === 'riassunto') {
+                updateTextPanel(side);
+            }
+        }
+    }
+});
+
+JavaBridge.register('setTranslatedText', function(jsonData) {
+    if (typeof jsonData === "string") {
+        try { jsonData = JSON.parse(jsonData); 
+        } catch(e) { 
+            window.JavaBridge.send("print logjs JSON parsing error in setTranslatedText: " + e.message);
+            return;
+        }
+    }
+    
+    if(jsonData && jsonData.text && jsonData.page) {
+        // Determina il lato basandoti sul numero di pagina
+        const side = (jsonData.page === currentPage) ? 'left' : 'right';
+        
+        if (jsonData.page === currentPage || jsonData.page === currentPage + 1) {
+            extractedTexts[side].tradotto = jsonData.text;
+            if (currentTextInstances[side] === 'tradotto') {
+                updateTextPanel(side);
+            }
+        }
+    }
+});
+
+function selectTextInstance(side, instance) {
+    // Aggiorna lo stato corrente
+    currentTextInstances[side] = instance;
+    
+    // Aggiorna i pulsanti
+    const buttons = document.querySelectorAll(`.instance-btn[data-side="${side}"]`);
+    buttons.forEach(btn => {
+        if (btn.dataset.instance === instance) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    
+    // Calcola il numero di pagina basandoti sul lato
+    const pageNumber = side === 'left' ? currentPage : currentPage + 1;
+    
+    // Invia messaggio al Java ogni volta che cambi istanza
+    const textToSend = extractedTexts[side][instance] || extractedTexts[side].normale || '';
+    if (textToSend && textToSend !== 'Nessun testo disponibile per questa pagina' && 
+        textToSend !== 'Pagina non caricata' && textToSend !== 'Errore nell\'estrazione del testo' &&
+        textToSend !== 'Fine documento') {
+        JavaBridge.send(`get text ${instance} ${pageNumber} @${textToSend}@`);
+    }
+    
+    // Aggiorna il pannello
+    updateTextPanel(side);
+}
 
 JavaBridge.register('setPdfPaths', function(jsonData) {
     if (typeof jsonData === "string") {
@@ -45,6 +154,13 @@ function changePagesPathInIndex() {
     if (indexPagesPath) {
         currentPage = 1;
         pathPages = indexPagesPath;
+        // Reset delle istanze di testo
+        extractedTexts = { 
+            left: { normale: '', riscritto: '', riassunto: '', tradotto: '' }, 
+            right: { normale: '', riscritto: '', riassunto: '', tradotto: '' }
+        };
+        currentTextInstances = { left: 'normale', right: 'normale' };
+        resetInstanceButtons();
         loadCurrentPages();
         updatePageDisplay();
         updateTotalPagesDisplay();
@@ -55,10 +171,27 @@ function changePagesPathInBody() {
     if (bodyPagesPath) {
         currentPage = 1;
         pathPages = bodyPagesPath;
+        extractedTexts = { 
+            left: { normale: '', riscritto: '', riassunto: '', tradotto: '' }, 
+            right: { normale: '', riscritto: '', riassunto: '', tradotto: '' }
+        };
+        currentTextInstances = { left: 'normale', right: 'normale' };
+        resetInstanceButtons();
         loadCurrentPages();
         updatePageDisplay();
         updateTotalPagesDisplay();
     } else window.JavaBridge.send("print logjs Body pages path not available");
+}
+
+function resetInstanceButtons() {
+    const buttons = document.querySelectorAll('.instance-btn');
+    buttons.forEach(btn => {
+        if (btn.dataset.instance === 'normale') {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
 }
 
 function updateTotalPagesDisplay() {
@@ -74,7 +207,6 @@ function updateTotalPagesDisplay() {
 
 async function loadPDF(path) {
     try {
-        
         const loadingTask = pdfjsLib.getDocument({
             url: path,
             cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
@@ -154,6 +286,18 @@ async function loadCurrentPages() {
         if (loadingElement) loadingElement.style.display = 'block';
         if (pagesContainer) pagesContainer.style.display = 'none';
         
+        // Reset delle istanze elaborate per le nuove pagine
+        extractedTexts.left.riscritto = '';
+        extractedTexts.left.riassunto = '';
+        extractedTexts.left.tradotto = '';
+        extractedTexts.right.riscritto = '';
+        extractedTexts.right.riassunto = '';
+        extractedTexts.right.tradotto = '';
+        
+        // Reset delle istanze correnti a "normale"
+        currentTextInstances = { left: 'normale', right: 'normale' };
+        resetInstanceButtons();
+        
         const evenPagePath = pathPages + "Extract%5B" + currentPage + "%5D.pdf";
         const oddPagePath = pathPages + "Extract%5B" + (currentPage + 1) + "%5D.pdf";
         const scale = currentZoom / 50;
@@ -173,6 +317,7 @@ async function loadCurrentPages() {
                 ctx.clearRect(0, 0, leftCanvas.width, leftCanvas.height);
             }
         }
+        
         if (currentPage + 1 <= maxPages) {
             try {
                 const rightPdf = await loadPDF(oddPagePath);
@@ -208,22 +353,23 @@ async function loadCurrentPages() {
         }
     }
 }
+
 async function extractTextFromCurrentPages() {
     try {
         if (currentPdfDocs.left) {
             const leftText = await extractTextFromPage(currentPdfDocs.left, 1);
-            extractedTexts.left = leftText || 'Nessun testo disponibile per questa pagina';
-        } else extractedTexts.left = 'Pagina non caricata';
+            extractedTexts.left.normale = leftText || 'Nessun testo disponibile per questa pagina';
+        } else extractedTexts.left.normale = 'Pagina non caricata';
         
         if (currentPdfDocs.right) {
             const rightText = await extractTextFromPage(currentPdfDocs.right, 1);
-            extractedTexts.right = rightText || 'Nessun testo disponibile per questa pagina';
+            extractedTexts.right.normale = rightText || 'Nessun testo disponibile per questa pagina';
         } else {
             const maxPages = getCurrentMaxPages();
             if (currentPage + 1 > maxPages) {
-                extractedTexts.right = 'Fine documento';
+                extractedTexts.right.normale = 'Fine documento';
             } else {
-                extractedTexts.right = 'Pagina non caricata';
+                extractedTexts.right.normale = 'Pagina non caricata';
             }
         }
 
@@ -232,8 +378,8 @@ async function extractTextFromCurrentPages() {
         
     } catch (e) {
         console.error('Errore nell\'estrazione del testo:', e);
-        extractedTexts.left = 'Errore nell\'estrazione del testo';
-        extractedTexts.right = 'Errore nell\'estrazione del testo';
+        extractedTexts.left.normale = 'Errore nell\'estrazione del testo';
+        extractedTexts.right.normale = 'Errore nell\'estrazione del testo';
         updateTextPanel('left');
         updateTextPanel('right');
     }
@@ -242,11 +388,24 @@ async function extractTextFromCurrentPages() {
 function updateTextPanel(side) {
     const textContent = document.getElementById(side + 'TextContent');
     if (textContent) {
-        const text = extractedTexts[side];
+        const currentInstance = currentTextInstances[side];
+        const text = extractedTexts[side][currentInstance];
+        
         if (text && text !== 'Nessun testo disponibile per questa pagina' && 
             text !== 'Pagina non caricata' && text !== 'Errore nell\'estrazione del testo' &&
             text !== 'Fine documento') {
-            textContent.innerHTML = '<div>' + text.replace(/\n/g, '<br>') + '</div>';
+            
+            // Gestisci correttamente gli a capo dal JSON e il grassetto
+            const formattedText = text
+                .replace(/\\n/g, '\n')  // Converti \\n (escape JSON) in \n
+                .replace(/\n/g, '<br>') // Converti \n in <br> per HTML
+                .replace(/\\r/g, '')    // Rimuovi eventuali \\r
+                .replace(/\r/g, '')     // Rimuovi eventuali \r
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Converti **testo** in <strong>testo</strong>
+            
+            textContent.innerHTML = '<div>' + formattedText + '</div>';
+        } else if (currentInstance !== 'normale' && !text) {
+            textContent.innerHTML = '<div class="no-text-message">Elaborazione in corso...</div>';
         } else {
             textContent.innerHTML = `<div class="no-text-message">${text}</div>`;
         }
@@ -280,7 +439,8 @@ async function copyTextContent(event, side) {
     event.stopPropagation();
     
     try {
-        const textToCopy = extractedTexts[side] || '';
+        const currentInstance = currentTextInstances[side];
+        const textToCopy = extractedTexts[side][currentInstance] || '';
         await navigator.clipboard.writeText(textToCopy);
 
         const button = event.currentTarget;

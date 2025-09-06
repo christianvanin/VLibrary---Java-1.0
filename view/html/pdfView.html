@@ -44,6 +44,20 @@
                         </div>
                     </div>
                     <div class="text-panel-content" id="leftTextPanel">
+                        <div class="text-instance-selector">
+                            <button class="instance-btn active" data-instance="normale" data-side="left" onclick="selectTextInstance('left', 'normale')">
+                                <i class="fa-solid fa-file-text"></i> Normale
+                            </button>
+                            <button class="instance-btn" data-instance="riscritto" data-side="left" onclick="selectTextInstance('left', 'riscritto')">
+                                <i class="fa-solid fa-pen"></i> Riscritto
+                            </button>
+                            <button class="instance-btn" data-instance="riassunto" data-side="left" onclick="selectTextInstance('left', 'riassunto')">
+                                <i class="fa-solid fa-compress"></i> Riassunto
+                            </button>
+                            <button class="instance-btn" data-instance="tradotto" data-side="left" onclick="selectTextInstance('left', 'tradotto')">
+                                <i class="fa-solid fa-language"></i> Tradotto
+                            </button>
+                        </div>
                         <div class="text-content" id="leftTextContent">
                             <div class="no-text-message">Nessun testo disponibile per questa pagina</div>
                         </div>
@@ -64,6 +78,20 @@
                         </div>
                     </div>
                     <div class="text-panel-content" id="rightTextPanel">
+                        <div class="text-instance-selector">
+                            <button class="instance-btn active" data-instance="normale" data-side="right" onclick="selectTextInstance('right', 'normale')">
+                                <i class="fa-solid fa-file-text"></i> Normale
+                            </button>
+                            <button class="instance-btn" data-instance="riscritto" data-side="right" onclick="selectTextInstance('right', 'riscritto')">
+                                <i class="fa-solid fa-pen"></i> Riscritto
+                            </button>
+                            <button class="instance-btn" data-instance="riassunto" data-side="right" onclick="selectTextInstance('right', 'riassunto')">
+                                <i class="fa-solid fa-compress"></i> Riassunto
+                            </button>
+                            <button class="instance-btn" data-instance="tradotto" data-side="right" onclick="selectTextInstance('right', 'tradotto')">
+                                <i class="fa-solid fa-language"></i> Tradotto
+                            </button>
+                        </div>
                         <div class="text-content" id="rightTextContent">
                             <div class="no-text-message">Nessun testo disponibile per questa pagina</div>
                         </div>
@@ -90,7 +118,6 @@
                     <button id="nextPageBtn"><i class="fa-solid fa-right-long"></i></button>
                 </div>
 
-                
                 <div class="toolbar-section">
                     <button id="refreshPagesBtn" title="Ri-renderizza Pagine">
                         <i class="fa-solid fa-refresh"></i>

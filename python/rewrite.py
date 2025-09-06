@@ -1,5 +1,7 @@
 import sys
 import requests
+import random
+import string
 import re
 import json
 from pathlib import Path
@@ -31,11 +33,11 @@ def main():
         device_id_match = re.search(r'"device_id":"([a-z0-9-]+)"', html)
         client_id_match = re.search(r'"x-client-id":"([a-z0-9-]+)"', html)
 
-        device_id = device_id_match.group(1) if device_id_match else "default-device"
+        device_id = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
         client_id = client_id_match.group(1) if client_id_match else "default-client"
 
         payload = {
-            "task_uid": "rewriter:5f273243-0f74-44d8-a8dd-3bd76c6faf50",
+            "task_uid": "rewriter:576e981c-d817-4a31-9998-1061926ada65",
             "data": {
                 "content": input_text,
                 "mode": "standard",

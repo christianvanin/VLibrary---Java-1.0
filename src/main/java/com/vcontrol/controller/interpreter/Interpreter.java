@@ -34,6 +34,7 @@ public class Interpreter {
         registerCommand(new Command(CommandType.BOOK, "SET", PrivilegeLevel.LOW, null, (arg) -> { controller.setBookActiveCode(arg); }));
         registerCommand(new Command(CommandType.SETTING, "PDFVIEW", PrivilegeLevel.LOW, null, (arg) -> { controller.openPDFView(); }));
         registerCommand(new Command(CommandType.SETTING, "HOMEVIEW", PrivilegeLevel.LOW, null, (arg) -> { controller.openHomeView(); }));
+        registerCommand(new Command(CommandType.GET, "TEXT", PrivilegeLevel.LOW, null, (arg) -> { controller.getCustomText(arg); }));
     }
 
     private void registerCommand(Command command) { commands.put(command.getType() + " " +command.getBody(), command); }
