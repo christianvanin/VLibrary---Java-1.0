@@ -148,7 +148,6 @@ public class Controller {
                 }
                 
                 String jsonResult = generateCustomTextJson(page, answer);
-                System.out.println("\nrisultato : " + jsonResult);
                 if (jsonResult.isEmpty()) {
                     LogManager.log(LogLevel.ERROR, "Errore nella generazione del JSON");
                     return;
