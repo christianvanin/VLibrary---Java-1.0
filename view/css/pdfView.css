@@ -231,31 +231,32 @@ html, body {
 
 .text-instance-selector {
     display: flex;
-    gap: 8px;
+    flex-wrap: wrap;
+    gap: 6px;
     padding: 12px 20px;
     border-bottom: 1px solid #e9ecef;
     background: #f8f9fa;
+    align-items: stretch;
 }
 
 .instance-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    flex: 1;
-    min-width: 0;
-    padding: 8px 12px;
+    gap: 4px;
+    flex: 0 0 auto;
+    min-width: fit-content;
+    padding: 6px 10px;
     background-color: #efefef;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     color: #333;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    text-align: center;
 }
 
 .instance-btn:hover {
@@ -502,16 +503,16 @@ html, body {
     
     .text-instance-selector {
         padding: 10px 15px;
-        gap: 6px;
-        flex-wrap: nowrap;
+        gap: 4px;
+        flex-wrap: wrap;
     }
     
     .instance-btn {
-        padding: 6px 8px;
-        font-size: 11px;
-        gap: 4px;
-        flex: 1;
-        min-width: 0;
+        padding: 5px 8px;
+        font-size: 10px;
+        gap: 3px;
+        flex: 0 0 auto;
+        min-width: fit-content;
     }
     
     .bottom-toolbar {

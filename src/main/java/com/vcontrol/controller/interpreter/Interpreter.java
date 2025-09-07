@@ -25,7 +25,7 @@ public class Interpreter {
     private void initializeCommands() { this.commands = new HashMap<>(); }
 
     private void registerCommands() {
-        registerCommand(new Command(CommandType.AI, "REWRITE", PrivilegeLevel.LOW, null, (arg) -> { controller.rewriteAI(arg); }));
+        registerCommand(new Command(CommandType.AI, "ASK", PrivilegeLevel.LOW, null, (arg) -> { controller.rewriteAI(arg); }));
         registerCommand(new Command(CommandType.TERMINAL, "CLEAR", PrivilegeLevel.LOW, null, (arg) -> { controller.clearTerminal(); }));
         registerCommand(new Command(CommandType.TERMINAL, "RUN", PrivilegeLevel.LOW, null, (arg) -> { controller.startTerminal(); }));
         registerCommand(new Command(CommandType.PRINT, "LOGJS", PrivilegeLevel.LOW, null, (arg) -> { controller.stampJSLog(arg); }));

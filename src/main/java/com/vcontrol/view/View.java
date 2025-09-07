@@ -21,6 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.vcontrol.controller.Controller;
+import com.vcontrol.utility.JavaScriptChunkedSender;
 import com.vcontrol.utility.config.LogManager;
 import com.vcontrol.utility.config.PathManager;
 import com.vcontrol.utility.config.LogManager.LogLevel;
@@ -29,10 +30,10 @@ public class View extends JFrame {
     private Controller controller;
     private CefBrowser browser;
     private CefClient client;
+    private JavaScriptChunkedSender chunkSender;
 
     public View(Controller controller, String[] args) {
         this.controller = controller;
-
         CefSettings settings = new CefSettings();
         settings.windowless_rendering_enabled = false;
 
@@ -81,6 +82,7 @@ public class View extends JFrame {
         client.addMessageRouter(msgRouter);
         File htmlFile = new File(PathManager.get("app.viewsPath"));
         browser = client.createBrowser(htmlFile.toURI().toString(), false, false);
+        chunkSender = new JavaScriptChunkedSender(browser);
         Component browserUI = browser.getUIComponent();
 
         this.setTitle("LibraryV - 1.0.0");
@@ -118,4 +120,6 @@ public class View extends JFrame {
         } catch (Exception e) { LogManager.log(LogLevel.ERROR, "Failed to open"); }
     }
 
+    public JavaScriptChunkedSender getChunkSender() { return chunkSender; }
+    public void setChunkSender(JavaScriptChunkedSender chunkSender) { this.chunkSender = chunkSender; }
 }

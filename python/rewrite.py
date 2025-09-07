@@ -30,7 +30,6 @@ def main():
         resp = session.get("https://monica.im/")
         html = resp.text
 
-        device_id_match = re.search(r'"device_id":"([a-z0-9-]+)"', html)
         client_id_match = re.search(r'"x-client-id":"([a-z0-9-]+)"', html)
 
         device_id = ''.join(random.choices(string.ascii_letters + string.digits, k=16))

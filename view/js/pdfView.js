@@ -11,13 +11,18 @@ let extractedTexts = {
         normale: '',
         riscritto: '',
         riassunto: '',
-        tradotto: ''
+        tradotto: '',
+        esercizi: '',
+        riassuntotradotto: ''
+
     }, 
     right: {
         normale: '',
         riscritto: '',
         riassunto: '',
-        tradotto: ''
+        tradotto: '',
+        esercizi: '',
+        riassuntotradotto: ''
     }
 };
 let currentTextInstances = { left: 'normale', right: 'normale' };
@@ -34,12 +39,53 @@ JavaBridge.register('setRewrittenText', function(jsonData) {
     }
     
     if(jsonData && jsonData.text && jsonData.page) {
-        // Determina il lato basandoti sul numero di pagina
-        const side = (jsonData.page === currentPage) ? 'left' : 'right';
+        const side = (jsonData.page === currentPage) ? 'right' : 'left';
         
         if (jsonData.page === currentPage || jsonData.page === currentPage + 1) {
             extractedTexts[side].riscritto = jsonData.text;
             if (currentTextInstances[side] === 'riscritto') {
+                updateTextPanel(side);
+            }
+        }
+    }
+});
+
+JavaBridge.register('setWorkText', function(jsonData) {
+    if (typeof jsonData === "string") {
+        try { jsonData = JSON.parse(jsonData); 
+        } catch(e) { 
+            window.JavaBridge.send("print logjs JSON parsing error in setWorkText: " + e.message);
+            return;
+        }
+    }
+    
+    if(jsonData && jsonData.text && jsonData.page) {
+        const side = (jsonData.page === currentPage) ? 'right' : 'left';
+        
+        if (jsonData.page === currentPage || jsonData.page === currentPage + 1) {
+            extractedTexts[side].esercizi = jsonData.text;
+            if (currentTextInstances[side] === 'esercizi') {
+                updateTextPanel(side);
+            }
+        }
+    }
+});
+
+JavaBridge.register('setTranslatedSummaryText', function(jsonData) {
+    if (typeof jsonData === "string") {
+        try { jsonData = JSON.parse(jsonData); 
+        } catch(e) { 
+            window.JavaBridge.send("print logjs JSON parsing error in setTranslatedSummaryText: " + e.message);
+            return;
+        }
+    }
+    
+    if(jsonData && jsonData.text && jsonData.page) {
+        const side = (jsonData.page === currentPage) ? 'right' : 'left';
+        
+        if (jsonData.page === currentPage || jsonData.page === currentPage + 1) {
+            extractedTexts[side].riassuntotradotto = jsonData.text;
+            if (currentTextInstances[side] === 'riassuntotradotto') {
                 updateTextPanel(side);
             }
         }
@@ -56,8 +102,7 @@ JavaBridge.register('setSummaryText', function(jsonData) {
     }
     
     if(jsonData && jsonData.text && jsonData.page) {
-        // Determina il lato basandoti sul numero di pagina
-        const side = (jsonData.page === currentPage) ? 'left' : 'right';
+        const side = (jsonData.page === currentPage) ? 'right' : 'left';
         
         if (jsonData.page === currentPage || jsonData.page === currentPage + 1) {
             extractedTexts[side].riassunto = jsonData.text;
@@ -78,8 +123,7 @@ JavaBridge.register('setTranslatedText', function(jsonData) {
     }
     
     if(jsonData && jsonData.text && jsonData.page) {
-        // Determina il lato basandoti sul numero di pagina
-        const side = (jsonData.page === currentPage) ? 'left' : 'right';
+        const side = (jsonData.page === currentPage) ? 'right' : 'left';
         
         if (jsonData.page === currentPage || jsonData.page === currentPage + 1) {
             extractedTexts[side].tradotto = jsonData.text;
@@ -91,10 +135,8 @@ JavaBridge.register('setTranslatedText', function(jsonData) {
 });
 
 function selectTextInstance(side, instance) {
-    // Aggiorna lo stato corrente
     currentTextInstances[side] = instance;
     
-    // Aggiorna i pulsanti
     const buttons = document.querySelectorAll(`.instance-btn[data-side="${side}"]`);
     buttons.forEach(btn => {
         if (btn.dataset.instance === instance) {
@@ -104,10 +146,8 @@ function selectTextInstance(side, instance) {
         }
     });
     
-    // Calcola il numero di pagina basandoti sul lato
-    const pageNumber = side === 'left' ? currentPage : currentPage + 1;
+    const pageNumber = side === 'left' ? currentPage + 1 : currentPage;
     
-    // Invia messaggio al Java ogni volta che cambi istanza
     const textToSend = extractedTexts[side][instance] || extractedTexts[side].normale || '';
     if (textToSend && textToSend !== 'Nessun testo disponibile per questa pagina' && 
         textToSend !== 'Pagina non caricata' && textToSend !== 'Errore nell\'estrazione del testo' &&
@@ -115,7 +155,6 @@ function selectTextInstance(side, instance) {
         JavaBridge.send(`get text ${instance} ${pageNumber} @${textToSend}@`);
     }
     
-    // Aggiorna il pannello
     updateTextPanel(side);
 }
 
@@ -154,10 +193,9 @@ function changePagesPathInIndex() {
     if (indexPagesPath) {
         currentPage = 1;
         pathPages = indexPagesPath;
-        // Reset delle istanze di testo
         extractedTexts = { 
-            left: { normale: '', riscritto: '', riassunto: '', tradotto: '' }, 
-            right: { normale: '', riscritto: '', riassunto: '', tradotto: '' }
+            left: { normale: '', riscritto: '', riassunto: '', tradotto: '' ,esercizi: '' , riassuntotradotto: ''}, 
+            right: { normale: '', riscritto: '', riassunto: '', tradotto: '' ,esercizi: '' , riassuntotradotto: ''}
         };
         currentTextInstances = { left: 'normale', right: 'normale' };
         resetInstanceButtons();
@@ -172,8 +210,8 @@ function changePagesPathInBody() {
         currentPage = 1;
         pathPages = bodyPagesPath;
         extractedTexts = { 
-            left: { normale: '', riscritto: '', riassunto: '', tradotto: '' }, 
-            right: { normale: '', riscritto: '', riassunto: '', tradotto: '' }
+            left: { normale: '', riscritto: '', riassunto: '', tradotto: '' ,esercizi: '' , riassuntotradotto: ''}, 
+            right: { normale: '', riscritto: '', riassunto: '', tradotto: '' ,esercizi: '' , riassuntotradotto: ''}
         };
         currentTextInstances = { left: 'normale', right: 'normale' };
         resetInstanceButtons();
@@ -286,15 +324,17 @@ async function loadCurrentPages() {
         if (loadingElement) loadingElement.style.display = 'block';
         if (pagesContainer) pagesContainer.style.display = 'none';
         
-        // Reset delle istanze elaborate per le nuove pagine
         extractedTexts.left.riscritto = '';
         extractedTexts.left.riassunto = '';
+        extractedTexts.left.esercizi = '';
         extractedTexts.left.tradotto = '';
+        extractedTexts.left.riassuntotradotto = '';
         extractedTexts.right.riscritto = '';
         extractedTexts.right.riassunto = '';
+        extractedTexts.right.esercizi = '';
         extractedTexts.right.tradotto = '';
+        extractedTexts.right.riassuntotradotto = '';
         
-        // Reset delle istanze correnti a "normale"
         currentTextInstances = { left: 'normale', right: 'normale' };
         resetInstanceButtons();
         
@@ -358,18 +398,18 @@ async function extractTextFromCurrentPages() {
     try {
         if (currentPdfDocs.left) {
             const leftText = await extractTextFromPage(currentPdfDocs.left, 1);
-            extractedTexts.left.normale = leftText || 'Nessun testo disponibile per questa pagina';
-        } else extractedTexts.left.normale = 'Pagina non caricata';
+            extractedTexts.right.normale = leftText || 'Nessun testo disponibile per questa pagina';
+        } else extractedTexts.right.normale = 'Pagina non caricata';
         
         if (currentPdfDocs.right) {
             const rightText = await extractTextFromPage(currentPdfDocs.right, 1);
-            extractedTexts.right.normale = rightText || 'Nessun testo disponibile per questa pagina';
+            extractedTexts.left.normale = rightText || 'Nessun testo disponibile per questa pagina';
         } else {
             const maxPages = getCurrentMaxPages();
             if (currentPage + 1 > maxPages) {
-                extractedTexts.right.normale = 'Fine documento';
+                extractedTexts.left.normale = 'Fine documento';
             } else {
-                extractedTexts.right.normale = 'Pagina non caricata';
+                extractedTexts.left.normale = 'Pagina non caricata';
             }
         }
 
@@ -395,13 +435,12 @@ function updateTextPanel(side) {
             text !== 'Pagina non caricata' && text !== 'Errore nell\'estrazione del testo' &&
             text !== 'Fine documento') {
             
-            // Gestisci correttamente gli a capo dal JSON e il grassetto
             const formattedText = text
-                .replace(/\\n/g, '\n')  // Converti \\n (escape JSON) in \n
-                .replace(/\n/g, '<br>') // Converti \n in <br> per HTML
-                .replace(/\\r/g, '')    // Rimuovi eventuali \\r
-                .replace(/\r/g, '')     // Rimuovi eventuali \r
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Converti **testo** in <strong>testo</strong>
+                .replace(/\\n/g, '\n')
+                .replace(/\n/g, '<br>')
+                .replace(/\\r/g, '')
+                .replace(/\r/g, '')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             
             textContent.innerHTML = '<div>' + formattedText + '</div>';
         } else if (currentInstance !== 'normale' && !text) {

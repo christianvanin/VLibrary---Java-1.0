@@ -17,6 +17,6 @@
                                         by Vanin Christian
                                                      @2025
                                 --------------------------
-                                 AI Integrated: GPT4o-mini
-  
+                                     AI Integrated: GPT-4o
+                                     
 %-----------------------------------------------------------%                        
