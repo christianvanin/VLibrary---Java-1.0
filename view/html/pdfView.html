@@ -137,12 +137,22 @@
                 </div>
 
                 <div class="toolbar-section">
-                    <button id="zoomOutBtn" title="Riduci Qualità">-</button>
-                    <div class="zoom-controls">
-                        <input type="range" id="zoomSlider" min="50" max="200" value="100">
-                        <span id="zoomPercent">100%</span>
+                    <div class="quality-controls">
+                        <div class="quality-label">Qualità</div>
+                        <div class="quality-slider-container">
+                            <button class="quality-control-btn" onclick="decreaseQuality()" title="Diminuisci Qualità">
+                                <i class="fa-solid fa-minus"></i>
+                            </button>
+                            <input type="range" class="quality-slider" id="qualitySlider" min="50" max="200" value="100">
+                            <button class="quality-control-btn" onclick="increaseQuality()" title="Aumenta Qualità">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+                        <div class="quality-indicator">
+                            <div class="quality-percentage" id="qualityPercent">100%</div>
+                            <div class="quality-status medium" id="qualityStatus">Media</div>
+                        </div>
                     </div>
-                    <button id="zoomInBtn" title="Aumenta Qualità">+</button>
                 </div>
             </div>
         </div>

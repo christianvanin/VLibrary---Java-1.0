@@ -4,7 +4,7 @@ let pathPages = '';
 let currentPage = 1;
 let totalBodyPages = 0;
 let totalIndexPages = 0;
-let currentZoom = 100;
+let currentQuality = 100;
 let currentPdfDocs = { left: null, right: null };
 let extractedTexts = { 
     left: {
@@ -340,7 +340,7 @@ async function loadCurrentPages() {
         
         const evenPagePath = pathPages + "Extract%5B" + currentPage + "%5D.pdf";
         const oddPagePath = pathPages + "Extract%5B" + (currentPage + 1) + "%5D.pdf";
-        const scale = currentZoom / 50;
+        const scale = currentQuality / 50; // Changed from currentZoom to currentQuality
         
         try {
             const leftPdf = await loadPDF(evenPagePath);
@@ -509,6 +509,53 @@ function updatePageDisplay() {
     }
 }
 
+function updateQualityDisplay() {
+    const qualityPercent = document.getElementById('qualityPercent');
+    const qualityStatus = document.getElementById('qualityStatus');
+    
+    if (qualityPercent) {
+        qualityPercent.textContent = `${currentQuality}%`;
+    }
+    
+    if (qualityStatus) {
+        qualityStatus.className = 'quality-status';
+        if (currentQuality < 80) {
+            qualityStatus.classList.add('low');
+            qualityStatus.textContent = 'Bassa';
+        } else if (currentQuality >= 80 && currentQuality <= 120) {
+            qualityStatus.classList.add('medium');
+            qualityStatus.textContent = 'Media';
+        } else {
+            qualityStatus.classList.add('high');
+            qualityStatus.textContent = 'Alta';
+        }
+    }
+}
+
+function increaseQuality() {
+    if (currentQuality < 200) {
+        currentQuality += 10;
+        const qualitySlider = document.getElementById('qualitySlider');
+        if (qualitySlider) {
+            qualitySlider.value = currentQuality;
+        }
+        updateQualityDisplay();
+        loadCurrentPages();
+    }
+}
+
+function decreaseQuality() {
+    if (currentQuality > 50) {
+        currentQuality -= 10;
+        const qualitySlider = document.getElementById('qualitySlider');
+        if (qualitySlider) {
+            qualitySlider.value = currentQuality;
+        }
+        updateQualityDisplay();
+        loadCurrentPages();
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('visibilitychange', function() {
         if (!document.hidden) {
@@ -582,41 +629,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    const zoomSlider = document.getElementById('zoomSlider');
-    const zoomPercent = document.getElementById('zoomPercent');
-    const zoomInBtn = document.getElementById('zoomInBtn');
-    const zoomOutBtn = document.getElementById('zoomOutBtn');
-
-    if (zoomSlider) {
-        zoomSlider.addEventListener('input', (e) => {
-            currentZoom = parseInt(e.target.value);
-            if (zoomPercent) zoomPercent.textContent = `${currentZoom}%`;
+    const qualitySlider = document.getElementById('qualitySlider');
+    if (qualitySlider) {
+        qualitySlider.addEventListener('input', (e) => {
+            currentQuality = parseInt(e.target.value);
+            updateQualityDisplay();
             loadCurrentPages();
         });
     }
-
-    if (zoomInBtn) {
-        zoomInBtn.addEventListener('click', () => {
-            if (currentZoom < 200) {
-                currentZoom += 10;
-                if (zoomSlider) zoomSlider.value = currentZoom;
-                if (zoomPercent) zoomPercent.textContent = `${currentZoom}%`;
-                loadCurrentPages();
-            }
-        });
-    }
-
-    if (zoomOutBtn) {
-        zoomOutBtn.addEventListener('click', () => {
-            if (currentZoom > 50) {
-                currentZoom -= 10;
-                if (zoomSlider) zoomSlider.value = currentZoom;
-                if (zoomPercent) zoomPercent.textContent = `${currentZoom}%`;
-                loadCurrentPages();
-            }
-        });
-    }
-
+    updateQualityDisplay();
     updatePageDisplay();
 });
 
