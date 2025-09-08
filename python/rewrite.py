@@ -40,7 +40,7 @@ def main():
             "data": {
                 "content": input_text,
                 "mode": "standard",
-                "use_model": "gpt-4o-mini",
+                "use_model": "gpt-4.1",
                 "intensity": "medium",
                 "language": "auto",
                 "device_id": device_id

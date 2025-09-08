@@ -2,6 +2,9 @@ package com.vcontrol.view;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 
 import javax.swing.JFrame;
@@ -31,6 +34,7 @@ public class View extends JFrame {
     private CefBrowser browser;
     private CefClient client;
     private JavaScriptChunkedSender chunkSender;
+    private double currentZoom = 0.0; // 0.0 = 100%
 
     public View(Controller controller, String[] args) {
         this.controller = controller;
@@ -45,13 +49,18 @@ public class View extends JFrame {
         settings.log_severity = CefSettings.LogSeverity.LOGSEVERITY_ERROR;
         String userDataDir = System.getProperty("user.home") + "/.miaAppCEFCache";
         settings.root_cache_path = userDataDir;
+        
         CefApp.addAppHandler(new CefAppHandlerAdapter(args) {
             @Override
             public void onBeforeCommandLineProcessing(String processType, CefCommandLine commandLine) {
                 commandLine.appendSwitch("allow-file-access-from-files");
+                commandLine.appendSwitch("enable-pinch");
+                commandLine.appendSwitch("enable-viewport");
+                commandLine.appendSwitchWithValue("force-device-scale-factor", "1.3");
                 //commandLine.appendSwitch("disable-web-security");
             }
         });
+        
         CefApp cefApp = CefApp.getInstance(args, settings);
         client = cefApp.createClient();
 
@@ -67,6 +76,21 @@ public class View extends JFrame {
                 try {
                     JSONObject obj = new JSONObject(request);
                     String cmd = obj.getString("command");
+                    
+                    if (cmd.equals("zoomIn")) {
+                        zoomIn();
+                        callback.success("Zoom aumentato");
+                        return true;
+                    } else if (cmd.equals("zoomOut")) {
+                        zoomOut();
+                        callback.success("Zoom diminuito");
+                        return true;
+                    } else if (cmd.equals("zoomReset")) {
+                        resetZoom();
+                        callback.success("Zoom ripristinato");
+                        return true;
+                    }
+                    
                     controller.interpretCommandFromJS(cmd);
                     callback.success("Comando ricevuto: " + cmd);
                 } catch (JSONException e) {
@@ -87,12 +111,78 @@ public class View extends JFrame {
 
         this.setTitle("LibraryV - 1.0.0");
         this.getContentPane().add(browserUI, BorderLayout.CENTER);
-        this.setSize(1024, 768);
+        this.setMinimumSize(new Dimension(1024, 768));
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        addKeyboardZoomSupport();
+        
         this.setVisible(true);
-
         CefApp.startup(args);
+    }
+
+    private void addKeyboardZoomSupport() {
+        this.addKeyListener(new KeyListener() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.isControlDown() || e.isMetaDown()) {
+                    switch (e.getKeyCode()) {
+                        case KeyEvent.VK_PLUS:
+                        case KeyEvent.VK_EQUALS:
+                            zoomIn();
+                            break;
+                        case KeyEvent.VK_MINUS:
+                            zoomOut();
+                            break;
+                        case KeyEvent.VK_0:
+                            resetZoom();
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {}
+
+            @Override
+            public void keyTyped(KeyEvent e) {}
+        });
+        
+        this.setFocusable(true);
+        this.requestFocus();
+    }
+
+    public void zoomIn() {
+        currentZoom += 0.5;
+        if (currentZoom > 5.0) currentZoom = 5.0;
+        browser.setZoomLevel(currentZoom);
+        LogManager.log(LogLevel.INFO, "Zoom impostato a: " + getZoomPercentage() + "%");
+    }
+
+    public void zoomOut() {
+        currentZoom -= 0.5;
+        if (currentZoom < -5.0) currentZoom = -5.0;
+        browser.setZoomLevel(currentZoom);
+        LogManager.log(LogLevel.INFO, "Zoom impostato a: " + getZoomPercentage() + "%");
+    }
+
+    public void resetZoom() {
+        currentZoom = 0.0;
+        browser.setZoomLevel(currentZoom);
+        LogManager.log(LogLevel.INFO, "Zoom ripristinato a: 100%");
+    }
+
+    public void setZoomLevel(double level) {
+        currentZoom = level;
+        browser.setZoomLevel(currentZoom);
+    }
+
+    public double getCurrentZoom() {
+        return currentZoom;
+    }
+
+    public int getZoomPercentage() {
+        return (int) Math.round(Math.pow(1.2, currentZoom) * 100);
     }
 
     public void executeJS(String command, String payload) {
@@ -117,7 +207,9 @@ public class View extends JFrame {
             File pdfViewHtml = new File(path);
             String url = pdfViewHtml.toURI().toString();
             browser.loadURL(url);
-        } catch (Exception e) { LogManager.log(LogLevel.ERROR, "Failed to open"); }
+        } catch (Exception e) { 
+            LogManager.log(LogLevel.ERROR, "Failed to open: " + e.getMessage()); 
+        }
     }
 
     public JavaScriptChunkedSender getChunkSender() { return chunkSender; }

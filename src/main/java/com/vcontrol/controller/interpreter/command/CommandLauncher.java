@@ -35,7 +35,7 @@ public class CommandLauncher {
 
     private List<String> parseCommand(String command) {
         List<String> tokens = new ArrayList<>();
-        Matcher m = Pattern.compile("@([^@]*)@|(\\S+)").matcher(command);
+        Matcher m = Pattern.compile("★([^★]*)★|(\\S+)").matcher(command);
         while (m.find()) {
             if (m.group(1) != null) tokens.add(m.group(1));
             else tokens.add(m.group(2));

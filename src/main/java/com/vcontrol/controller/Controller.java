@@ -141,7 +141,7 @@ public class Controller {
                         prompt = bypass + "traduci il seguente testo in italiano , se è gia in italiano riscrivilo senza modificarlo"; 
                         break;
                     case "esercizi":
-                        prompt = bypass + "dammi gli esercizi svolti dividendo ogni esecizio (se sono in inglese ogni esercizio deve avere la sua versione tradotta in italiano sotto)(se sono calcoli matematici svolgili scrivendo passaggio per passaggio): ";
+                        prompt = bypass + "dammi gli esercizi svolti dividendo ogni esecizio (attenzione il testo presenta del rumore con carattere al suo interno tu sistemalo e dammelo ordinato) Input: ";
                         break;
                     case "riassuntotradotto":
                         prompt = bypass + "riscrivi il seguente testo riassumendo e schematizando senza tagliare parti importanti (traducilo in italiano, se è gia in italiano riscrivi solo il riassunto)";

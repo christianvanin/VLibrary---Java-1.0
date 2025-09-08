@@ -152,7 +152,7 @@ function selectTextInstance(side, instance) {
     if (textToSend && textToSend !== 'Nessun testo disponibile per questa pagina' && 
         textToSend !== 'Pagina non caricata' && textToSend !== 'Errore nell\'estrazione del testo' &&
         textToSend !== 'Fine documento') {
-        JavaBridge.send(`get text ${instance} ${pageNumber} @${textToSend}@`);
+        JavaBridge.send(`get text ${instance} ${pageNumber} ★${textToSend}★`);
     }
     
     updateTextPanel(side);
