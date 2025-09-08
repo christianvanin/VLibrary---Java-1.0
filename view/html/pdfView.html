@@ -113,7 +113,7 @@
 
             <div class="pdf-viewer" id="pdfViewer">
                 <div class="loading" id="loading"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento PDF...</div>
-                <div class="pages-container" id="pagesContainer" style="display: none; flex-direction: row; justify-content: center;">
+                <div class="pages-container" id="pagesContainer" style="display: none;">
                     <canvas id="leftPage" class="page-canvas"></canvas>
                     <canvas id="rightPage" class="page-canvas"></canvas>
                 </div>
@@ -151,6 +151,22 @@
                         <div class="quality-indicator">
                             <div class="quality-percentage" id="qualityPercent">100%</div>
                             <div class="quality-status medium" id="qualityStatus">Media</div>
+                        </div>
+                    </div>
+                    
+                    <div class="zoom-controls">
+                        <div class="zoom-label">Zoom</div>
+                        <div class="zoom-slider-container">
+                            <button class="quality-control-btn" onclick="decreaseZoom()" title="Diminuisci Zoom">
+                                <i class="fa-solid fa-minus"></i>
+                            </button>
+                            <input type="range" class="zoom-slider" id="zoomSlider" min="50" max="200" value="100">
+                            <button class="quality-control-btn" onclick="increaseZoom()" title="Aumenta Zoom">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+                        <div class="zoom-indicator">
+                            <div class="zoom-percentage" id="zoomPercent">100%</div>
                         </div>
                     </div>
                 </div>

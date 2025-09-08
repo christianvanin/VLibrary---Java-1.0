@@ -5,6 +5,7 @@ let currentPage = 1;
 let totalBodyPages = 0;
 let totalIndexPages = 0;
 let currentQuality = 100;
+let currentZoom = 100;
 let currentPdfDocs = { left: null, right: null };
 let extractedTexts = { 
     left: {
@@ -308,6 +309,48 @@ async function renderPage(pdfDoc, canvas, scale = 1.0) {
     } catch (e) { }
 }
 
+function updateZoomDisplay() {
+    const zoomPercent = document.getElementById('zoomPercent');
+    
+    if (zoomPercent) {
+        zoomPercent.textContent = `${currentZoom}%`;
+    }
+    
+    applyZoomToContainer();
+}
+
+function applyZoomToContainer() {
+    const pagesContainer = document.getElementById('pagesContainer');
+    if (pagesContainer) {
+        const zoomFactor = currentZoom / 100;
+        pagesContainer.style.transform = `scale(${zoomFactor})`;
+        pagesContainer.style.transformOrigin = 'top left';
+    }
+}
+
+// Zoom control functions
+function increaseZoom() {
+    if (currentZoom < 500) {
+        currentZoom += 10;
+        const zoomSlider = document.getElementById('zoomSlider');
+        if (zoomSlider) {
+            zoomSlider.value = currentZoom;
+        }
+        updateZoomDisplay();
+    }
+}
+
+function decreaseZoom() {
+    if (currentZoom > 25) {
+        currentZoom -= 10;
+        const zoomSlider = document.getElementById('zoomSlider');
+        if (zoomSlider) {
+            zoomSlider.value = currentZoom;
+        }
+        updateZoomDisplay();
+    }
+}
+
 async function loadCurrentPages() {
     if (!pathPages) {
         window.JavaBridge.send("print logjs No path pages set");
@@ -340,7 +383,7 @@ async function loadCurrentPages() {
         
         const evenPagePath = pathPages + "Extract%5B" + currentPage + "%5D.pdf";
         const oddPagePath = pathPages + "Extract%5B" + (currentPage + 1) + "%5D.pdf";
-        const scale = currentQuality / 50; // Changed from currentZoom to currentQuality
+        const scale = currentQuality / 50;
         
         try {
             const leftPdf = await loadPDF(evenPagePath);
@@ -385,6 +428,8 @@ async function loadCurrentPages() {
         await extractTextFromCurrentPages();
         if (loadingElement) loadingElement.style.display = 'none';
         if (pagesContainer) pagesContainer.style.display = 'flex';
+
+        applyZoomToContainer();
     } catch (e) {
         console.error('Error loading pages:', e);
         window.JavaBridge.send("print logjs Error in loadCurrentPages: " + e.message);
@@ -637,7 +682,17 @@ document.addEventListener('DOMContentLoaded', function() {
             loadCurrentPages();
         });
     }
+
+    const zoomSlider = document.getElementById('zoomSlider');
+    if (zoomSlider) {
+        zoomSlider.addEventListener('input', (e) => {
+            currentZoom = parseInt(e.target.value);
+            updateZoomDisplay();
+        });
+    }
+
     updateQualityDisplay();
+    updateZoomDisplay();
     updatePageDisplay();
 });
 

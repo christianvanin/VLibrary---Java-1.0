@@ -6,6 +6,14 @@ html, body {
     background-color: #fffaf0;
     overflow: hidden;
 }
+* {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+    display: none;
+}
 
 #side-panel {
     width: 260px;
@@ -281,24 +289,12 @@ html, body {
     max-height: calc(100vh - 35vh);
     white-space: pre-wrap;
     user-select: text;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 .text-content::-webkit-scrollbar {
-    width: 6px;
-}
-
-.text-content::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
-}
-
-.text-content::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 3px;
-}
-
-.text-content::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
+    display: none;
 }
 
 .no-text-message {
@@ -318,9 +314,15 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    overflow: auto;
     box-sizing: border-box;
     margin: 10px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.pdf-viewer::-webkit-scrollbar {
+    display: none;
 }
 
 .pages-container {
@@ -341,9 +343,9 @@ html, body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.12);
     object-fit: contain;
     transition: all 0.3s ease;
-    flex: 1;
     max-width: calc(50% - 10px);
     max-height: 100%;
+    transform-origin: center;
 }
 
 .page-canvas:hover {
@@ -392,6 +394,16 @@ html, body {
     border: 1px solid #dee2e6;
 }
 
+.zoom-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 12px;
+    border: 1px solid #dee2e6;
+}
+
 .quality-label {
     font-size: 12px;
     font-weight: 600;
@@ -401,7 +413,26 @@ html, body {
     min-width: 60px;
 }
 
+.zoom-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #495057;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 40px;
+}
+
 .quality-slider-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    background: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.zoom-slider-container {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -422,6 +453,17 @@ html, body {
     margin: 0;
 }
 
+.zoom-slider {
+    width: 100px;
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #6c757d 0%, #495057 50%, #343a40 100%);
+    outline: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    margin: 0;
+}
+
 .quality-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
@@ -435,9 +477,27 @@ html, body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
+.zoom-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #495057;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
 .quality-slider::-webkit-slider-thumb:hover {
     transform: scale(1.1);
     border-color: #20c997;
+}
+
+.zoom-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    border-color: #343a40;
 }
 
 .quality-slider::-moz-range-thumb {
@@ -450,6 +510,16 @@ html, body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
+.zoom-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #495057;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
 .quality-indicator {
     display: flex;
     flex-direction: column;
@@ -457,7 +527,22 @@ html, body {
     gap: 2px;
 }
 
+.zoom-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
 .quality-percentage {
+    font-size: 11px;
+    font-weight: 600;
+    color: #495057;
+    min-width: 35px;
+    text-align: center;
+}
+
+.zoom-percentage {
     font-size: 11px;
     font-weight: 600;
     color: #495057;
@@ -607,6 +692,10 @@ html, body {
     
     .quality-slider {
         width: 100px;
+    }
+    
+    .zoom-slider {
+        width: 80px;
     }
     
     .pdf-viewer {
